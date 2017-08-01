@@ -4,25 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class screenmanager : MonoBehaviour {
-
-    public Animator initiallyOpen;
     private Animator mCurrent;
 
     private int mStateID;
 
     private const string kIdleStateName = "idle";
-        private const string kOnStateName = "on";
+    private const string kOnStateName = "on";
         private const string kOffStateName = "off";
 
     public void OnEnable()
     {
         //We cache the Hash to the "Open" Parameter, so we can feed to Animator.SetBool.
-            mStateID = Animator.StringToHash ("State");
+            mStateID = Animator.StringToHash ("On");
 
         //If set, open the initial Screen now.
 //        if (initiallyOpen == null)
 //            return;
-            OpenPanel(initiallyOpen);
+//            OpenPanel(initiallyOpen);
     }
 
     //Closes the currently open panel and opens the provided one.
@@ -46,8 +44,7 @@ public class screenmanager : MonoBehaviour {
         //Set the new Screen as then open one.
         mCurrent = anim;
         //Start the open animation
-
-            mCurrent.SetInteger(mStateID,1);
+        mCurrent.SetBool(mStateID,true);
 
         //Set an element in the new screen as the new Selected one.
 //        GameObject go = FindFirstEnabledSelectable(anim.gameObject);
@@ -60,7 +57,7 @@ public class screenmanager : MonoBehaviour {
             return;
 
         //Start the close animation.
-            mCurrent.SetInteger(mStateID,2);
+            mCurrent.SetBool(mStateID,false);
 
         //Reverting selection to the Selectable used before opening the current screen.
 //        SetSelected(m_PreviouslySelected);
@@ -79,13 +76,12 @@ public class screenmanager : MonoBehaviour {
             if (!anim.IsInTransition(0))
                     closedStateReached = anim.GetCurrentAnimatorStateInfo(0).IsName(kOffStateName);
 
-            wantToClose = anim.GetInteger(mStateID) == 2; //anim.GetBool(m_OpenParameterId);
+            wantToClose =  anim.GetBool(mStateID);
 
             yield return new WaitForEndOfFrame();
         }
 
-        if (wantToClose)
-                mCurrent.SetInteger(mStateID,0);
+        //if (wantToClose)
             //anim.gameObject.SetActive(false);
     }
 
